@@ -6,9 +6,9 @@ const useGetRequest = (url) => {
   useEffect(async () => {
     const res = await fetch(url);
     const resJson = await res.json();
-    setData(resJson.data);
+    setData(resJson);
   },[url])
-
+  
   return data;
 }
 

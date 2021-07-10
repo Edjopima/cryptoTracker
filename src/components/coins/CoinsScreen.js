@@ -10,7 +10,7 @@ const CoinsScreen = ({navigation}) => {
     navigation.navigate('CoinDetail',{coin})
   }
 
-  const coins = useGetRequest('https://api.coinlore.net/api/tickers/')
+  const coins = useGetRequest('https://api.coinlore.net/api/tickers/').data
 
   return (
     <View style={styles.container} >

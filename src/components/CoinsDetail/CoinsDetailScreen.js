@@ -1,6 +1,8 @@
 import React, {useEffect} from 'react';
-import { View, Text, Image, StyleSheet, SectionList } from 'react-native';
+import { View, Text, Image, StyleSheet, SectionList, FlatList } from 'react-native';
 import colors from '../../res/colors';
+import useGetRequest from '../../hooks/useGetRequest';
+import CoinMarketItem from './CoinMarketItem';
 
 const CoinsDetailScreen = (props) => {
   const { coin } = props.route.params;
@@ -9,6 +11,9 @@ const CoinsDetailScreen = (props) => {
     const name = nameStr.toLowerCase().replace(' ','-');
     return `https://c1.coinlore.com/img/25x25/${name}.png`
   };
+
+  const marketsUrl = `https://api.coinlore.net/api/coin/markets/?id=${coin.id}`
+  const markets = useGetRequest(marketsUrl);
 
   const getSections = (coin) => {
     const sections = [
@@ -31,7 +36,7 @@ const CoinsDetailScreen = (props) => {
   useEffect(()=>{
     props.navigation.setOptions({
       title:coin.symbol,
-    })
+    });
   },[coin]);
 
   return (
@@ -45,6 +50,7 @@ const CoinsDetailScreen = (props) => {
       </View>
 
       <SectionList
+        style={styles.section}
         sections={getSections(coin)}
         keyExtractor={(item)=>item}
         renderItem={({item})=>
@@ -56,6 +62,18 @@ const CoinsDetailScreen = (props) => {
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionText}>{section.title}</Text>
           </View>
+        }
+      />
+
+      <Text style={styles.marketsTitle}>Markets</Text>
+      <FlatList 
+      style={styles.list}
+        horizontal={true}
+        data={markets}
+        renderItem={({item})=>
+          <CoinMarketItem 
+            item={item}
+          />
         }
       />
     </View>
@@ -82,6 +100,9 @@ const styles = StyleSheet.create({
     width:25,
     height:25,
   },
+  section:{
+    maxHeight:220,
+  },
   sectionHeader:{
     backgroundColor:'rgba(0,0,0,0.2)',
     padding:8,
@@ -97,6 +118,17 @@ const styles = StyleSheet.create({
     color:'#fff',
     fontSize:14,
     fontWeight:'bold',
+  },
+  list:{
+    maxHeight:100,
+    paddingLeft:16,
+  },
+  marketsTitle:{
+    color:'#fff',
+    fontSize:16,
+    fontWeight:'bold',
+    marginBottom:16,
+    marginLeft:16,
   },
 });
 
